@@ -1,1 +1,2 @@
+#!/bin/sh
 cc -framework OpenGL -framework GLUT -framework Foundation NullGeodesic.c calc.c ccalc.c output.c -mmacosx-version-min=10.8 -o NullGeodesic
