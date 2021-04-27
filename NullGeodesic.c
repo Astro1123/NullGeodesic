@@ -126,17 +126,17 @@ void display(void) {
   			x = lx;
  			y = ly;
 			theta0 = deg2rad(deg + ddeg * i);
-			sprintf(str, "光源(%d)：(%f, %f)\n", i, lx, ly);
+			sprintf(str, "光源(%d)：(%f, %f)\n", i+1, lx, ly);
   	        show(str, output, fp);
-			sprintf(str, "deg(%d)：%f\n", i, deg + ddeg * i);
+			sprintf(str, "deg(%d)：%f\n", i+1, deg + ddeg * i);
   	        show(str, output, fp);
 		} else if (type == 1) {
   			x = lx;
  			y = ly+dy*i;
 			theta0 = deg2rad(deg);
-			sprintf(str, "光源(%d)：(%f, %f)\n", i, lx, ly + dy*i);
+			sprintf(str, "光源(%d)：(%f, %f)\n", i+1, lx, ly + dy*i);
   	        show(str, output, fp);
-			sprintf(str, "deg(%d)：%f\n", i, deg);
+			sprintf(str, "deg(%d)：%f\n", i+1, deg);
   	        show(str, output, fp);
 		}
 		xy2rp(&r0, &phi0, x, y);
