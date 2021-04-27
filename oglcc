@@ -1,5 +1,1 @@
 cc -framework OpenGL -framework GLUT -framework Foundation NullGeodesic.c calc.c ccalc.c output.c -mmacosx-version-min=10.8 -o NullGeodesic
-
-#fname_ext=$1
-#fname="${fname_ext%.*}"
-#cc -framework OpenGL -framework GLUT -framework Foundation $@ -mmacosx-version-min=10.8 -o $fname
