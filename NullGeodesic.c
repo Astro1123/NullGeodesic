@@ -31,7 +31,7 @@ static double b;														// 衝突パラメータ
 static int sign = 1;											    		// 符号 (ブラックホールに近づくとき+1)
 static double epsc = 0.001;
 static int type=0;														// 0:角度を変化、1:y座標を変化
-static int output = 2;                                                 // 出力(0：出力しない、1：shellに出力、2：ファイルに出力)
+static int output = 2;                                                 // 出力(0：出力しない、1：terminalに出力、2：ファイルに出力)
 static bool output_r = false;                                       // 計算結果の出力
 static char filename[64] = "resalt.txt";                       // 出力するファイル名
 FILE *fp;
