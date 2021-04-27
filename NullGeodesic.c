@@ -111,11 +111,8 @@ void display(void) {
   	sprintf(str, "ddeg：%f\n", ddeg);
   	show(str, output, fp);
   } else if(type == 1) {
-  	for(i=0; i<lcount; i++) {
+  	for(i=0; i<lcount; i++)
   		PrPlus(0.1, lx, ly+i*dy);	         				// 光源
-    	sprintf(str, "光源%d：(%f, %f)\n", i+1, lx, ly);
-  	    show(str, output, fp);
-  	}
   	sprintf(str, "dy：%f\n", dy);
   	show(str, output, fp);
   }
@@ -129,12 +126,16 @@ void display(void) {
   			x = lx;
  			y = ly;
 			theta0 = deg2rad(deg+ddeg*i);
+			sprintf(str, "光源：(%f, %f)\n", lx, ly);
+  	        show(str, output, fp);
 			sprintf(str, "deg：%f\n", deg);
   	        show(str, output, fp);
 		} else if (type == 1) {
   			x = lx;
  			y = ly+dy*i;
 			theta0 = deg2rad(deg);
+			sprintf(str, "光源：(%f, %f)\n", lx, ly);
+  	        show(str, output, fp);
 			sprintf(str, "deg：%f\n", deg);
   	        show(str, output, fp);
 		}
