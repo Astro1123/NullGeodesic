@@ -140,7 +140,7 @@ void display(void) {
   	        show(str, output, fp);
 		}
 		xy2rp(&r0, &phi0, x, y);
-		b = r0 * sin(phi0 + theta0) / sqrt( (r0 - 1.0) / r0 );
+		b = r0 * sin(phi0 + theta0) / sqrt( (r0 - 1.0) / r0 );          // 角運動量保存
 		sign = 1;
 		r = r0;
 		phi = phi0;
