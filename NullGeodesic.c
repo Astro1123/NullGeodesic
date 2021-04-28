@@ -1,7 +1,8 @@
-// Mac
-#include <GLUT/glut.h>
-// Windows
-//#include <GL/glut.h>
+#ifdef 	__MACH__
+#include <GLUT/glut.h>					// macOS
+#else
+#include <GL/glut.h>					// Windows
+#endif
 
 #include <stdlib.h>
 #include <math.h>
@@ -20,17 +21,20 @@
 #define PosX 100
 #define PosY 100
 
+#define sqrt3 1.732050807568877
+
 static double mag = 0.3;											// この値が大きいほど図が拡大される
 static double lx = 10.0, ly = 0.0;								// 光源の位置 (シュバルツシルト半径：r_g = 1.0)
 static double deg = 20.0;											// 光を放つ角度[deg]
 static double dt = 0.005;											// 時間の刻み幅
-static int lcount = 20;												// ループ回数
+static int lcount = 40;												// ループ回数
+static int nacount = 100000;									// ループ回数
 static double ddeg = -0.5;										// ループごとに変化させる角度
-static double dy = 0.1;												// ループごとに変化させるy座標
+static double dy = 0.1*sqrt3;									// ループごとに変化させるy座標
 static double b;														// 衝突パラメータ
 static int sign = 1;											    		// 符号 (ブラックホールに近づくとき+1)
 static double epsc = 0.001;
-static int type=0;														// 0:角度を変化、1:y座標を変化
+static int type = 0;													// 0:角度を変化、1:y座標を変化
 static int output = 2;                                                 // 出力(0：出力しない、1：terminalに出力、2：ファイルに出力)
 static bool output_r = false;                                       // 計算結果の出力
 static char filename[64] = "resalt.txt";                       // 出力するファイル名
@@ -82,18 +86,10 @@ void PrLine(double x1, double y1, double x2, double y2) {
 void display(void) {
   double r, x, y, x0, y0, r0, phi0, theta0, phi, rmin;
   double dr, dph;
-  int i;
+  int i, j;
   char str[64];
   
   glClear(GL_COLOR_BUFFER_BIT);
-  
-  glColor3d(0.0, 0.0, 0.0);
-  glBegin(GL_LINE_LOOP);
-  glVertex2d(-4.8, -3.1);
-  glVertex2d(4.8, -3.1);
-  glVertex2d(4.8, 3.1);
-  glVertex2d(-4.8, 3.1);
-  glEnd();
   
   glColor3d(0.0, 0.0, 0.0);
   Circle2D(1.0, 0, 0, 100);				         		// 事象の地平面
@@ -140,7 +136,7 @@ void display(void) {
   	        show(str, output, fp);
 		}
 		xy2rp(&r0, &phi0, x, y);
-		b = r0 * sin(phi0 + theta0) / sqrt( (r0 - 1.0) / r0 );          // 角運動量保存
+		b = r0 * sin(phi0 + theta0);
 		sign = 1;
 		r = r0;
 		phi = phi0;
@@ -153,7 +149,7 @@ void display(void) {
 		    sprintf(str, "------------------------------\n");
   	        show(str, output, fp);
   	    }
-		while(true) {
+		for(j = 0; j < nacount; j++) {
 			RungeKutta(&dr, &dph, r, b, dt);
 			if (output_r == true) {
 			    sprintf(str, "%f , %f / %f , %f\n", x , y, distance(x, y), angle(x, y) );

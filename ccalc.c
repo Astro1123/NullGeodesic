@@ -28,11 +28,12 @@ void cubic_equation(double a, double b, double c, double d, double _Complex *sol
 double r_minimum(double b) {
 	double _Complex solution[3];
 	double a, max;
+	double eps = 0.0000001;	
 	int i;
 	max = 0.0;
 	cubic_equation(1.0, 0.0, -b * b, b * b, solution);
 	for(i=0; i<3; i++) {
-		if (cimag(solution[i]) == 0.0)
+		if (fabs(cimag(solution[i])) < eps)					// 虚部の値がepsよりも小さいなら虚部は0と判定
 			a = creal(solution[i]);
 		else
 			a = 0.0;
