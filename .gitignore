@@ -1,1 +1,11 @@
 .DS_Store
+Run
+Run.bat
+Run_input
+oglcc
+oglgcc.bat
+input.mf
+freeglut.dll
+NullGeodesic
+NullGeodesic.exe
+class/*
