@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "calc.h"                   // 計算関係
 #include "bool.h"                   // bool型の定義
@@ -23,22 +24,63 @@
 
 #define sqrt3 1.732050807568877
 
-static double mag = 0.3;											// この値が大きいほど図が拡大される
-static double lx = 10.0, ly = 0.0;								// 光源の位置 (シュバルツシルト半径：r_g = 1.0)
-static double deg = 20.0;											// 光を放つ角度[deg]
-static double dt = 0.005;											// 時間の刻み幅
-static int lcount = 40;												// ループ回数
-static int nacount = 100000;									// ループ回数
-static double ddeg = -0.5;										// ループごとに変化させる角度
-static double dy = 0.1*sqrt3;									// ループごとに変化させるy座標
-static double b;														// 衝突パラメータ
-static int sign = 1;											    		// 符号 (ブラックホールに近づくとき+1)
-static double epsc = 0.001;
-static int type = 0;													// 0:角度を変化、1:y座標を変化
-static int output = 2;                                                 // 出力(0：出力しない、1：terminalに出力、2：ファイルに出力)
-static bool output_r = false;                                       // 計算結果の出力
-static char filename[64] = "resalt.txt";                       // 出力するファイル名
+double mag;											// この値が大きいほど図が拡大される
+double lx, ly;           								// 光源の位置 (シュバルツシルト半径：r_g = 1.0)
+double deg; 											// 光を放つ角度[deg]
+double dt;  											// 時間の刻み幅
+int lcount;												// ループ回数
+int nacount;        									// ループ回数
+double ddeg;										// ループごとに変化させる角度
+double dy;          									// ループごとに変化させるy座標
+double b;												// 衝突パラメータ
+int sign;									    		// 符号 (ブラックホールに近づくとき+1)
+double epsc;
+int type;												// 0:角度を変化、1:y座標を変化
+int cf;
+int output;                                            // 出力(0：出力しない、1：terminalに出力、2：ファイルに出力)
+bool output_r = false;                          // 計算結果の出力
+char filename[64];                               // 出力するファイル名
 FILE *fp;
+
+int input(void) {
+    FILE *f;
+    char str[128];
+    f = fopen("data.txt","r");
+    if (f == NULL) {
+        printf("ファイルを開けませんでした\n");
+        return -1;
+    }
+    fgets(str, sizeof(str), f);	
+    mag = atof(str);
+    fgets(str, sizeof(str), f);	
+    lx = atof(str);
+    fgets(str, sizeof(str), f);	
+    ly = atof(str);
+    fgets(str, sizeof(str), f);	
+    deg = atof(str);
+    fgets(str, sizeof(str), f);	
+    dt = atof(str);
+    fgets(str, sizeof(str), f);	
+    lcount = atoi(str);
+    fgets(str, sizeof(str), f);	
+    nacount = atoi(str);
+    fgets(str, sizeof(str), f);	
+    ddeg = atof(str);
+    fgets(str, sizeof(str), f);	
+    dy = atof(str);
+    fgets(str, sizeof(str), f);	
+    sign = atoi(str);
+    fgets(str, sizeof(str), f);	
+    type = atoi(str);
+    fgets(str, sizeof(str), f);	
+    output = atoi(str);
+    fgets(str, sizeof(str), f);	
+    cf = atoi(str);
+    fgets(str, sizeof(str), f);	
+    strcpy(filename,str);
+    fclose(f);
+    return 0;
+} 
 
 // 正n角形を描く（nを大きくすると円）
 // 半径 radius、中心 ( x, y )
@@ -113,7 +155,6 @@ void display(void) {
   	show(str, output, fp);
   }
   
-  glColor3d(1.0, 0.0, 0.0);
   sprintf(str,"\n");
   show(str, output, fp);
   
@@ -137,6 +178,12 @@ void display(void) {
 		}
 		xy2rp(&r0, &phi0, x, y);
 		b = r0 * sin(phi0 + theta0);
+	    if (b < 1.4999*sqrt(3) && cf == 1) {
+	        glColor3d(0.75, 0.0, 0.0);
+	    } else {
+	        glColor3d(1.0, 0.0, 0.0);
+	    }
+	    
 		sign = 1;
 		r = r0;
 		phi = phi0;
@@ -209,6 +256,7 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 int main(int argc, char *argv[]) {
+  if (input() == -1) return -1;
   if (type != 1)
   	type = 0;
   if (output != 1 && output != 2)
