@@ -1,3 +1,0 @@
-#!/bin/sh
-cd `dirname $0`
-gcc NullGeodesic.c calc.c ccalc.c output.c -lglut -lGLU -lGL -lm -o NullGeodesic.out
