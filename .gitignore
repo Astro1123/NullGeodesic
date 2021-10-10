@@ -1,11 +1,15 @@
 .DS_Store
 Run
+RunLin
 Run.bat
 Run_input
 oglcc
+oglgcc
 oglgcc.bat
 input.mf
 freeglut.dll
 NullGeodesic
+NullGeodesic.out
 NullGeodesic.exe
 class/*
+Release/*

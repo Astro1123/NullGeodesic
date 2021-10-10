@@ -527,6 +527,8 @@ class outside {
   	String command = "";
   	if (pu.isWindows()) {
   		command = "NullGeodesic";
+  	} else if (pu.isLinux()) {
+  		command = "./NullGeodesic.out";
   	} else {
   		command = "./NullGeodesic";
   	}
