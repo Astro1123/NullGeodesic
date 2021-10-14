@@ -3,6 +3,7 @@
 
 double rd(double r, double b);
 double pd(double r, double b);
+double pd2(double dt, double dr, double r,int sign);
 double deg2rad(double deg);
 double distance(double x, double y);
 double angle(double x, double y);

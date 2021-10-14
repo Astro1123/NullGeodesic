@@ -21,6 +21,7 @@ public class input extends JFrame implements ActionListener {
   JTextField texttype;
   JTextField textoutput;
   JTextField textcf;
+  JTextField textbmet;
   JTextField textfilename;
   
   public static void main(String args[]) {
@@ -73,6 +74,8 @@ public class input extends JFrame implements ActionListener {
     panel2.add(poutput);
 	JPanel pcf = cfline();
     panel2.add(pcf);
+	JPanel pbmet = bmetline();
+    panel2.add(pbmet);
 	JPanel pfilename = filenameline();
     panel2.add(pfilename);
     JPanel p = btnline();
@@ -100,6 +103,23 @@ public class input extends JFrame implements ActionListener {
     return panel;
   }
   
+  private JPanel bmetline() {
+	JPanel panel = new JPanel();
+	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+  	JPanel p = new JPanel();
+    p.setLayout(new FlowLayout());
+    JLabel label = new JLabel("bmet : ");
+    textbmet = new JTextField(String.valueOf(out.bmet),20);
+    p.add(label);
+    p.add(textbmet);
+    panel.add(p);
+  	JPanel p2 = new JPanel();
+    p2.setLayout(new FlowLayout());
+    JLabel label2 = new JLabel("衝突パラメータbの計算方法 (0 or 1)");
+    p2.add(label2);
+    panel.add(p2);
+    return panel;
+  }
   private JPanel cfline() {
 	JPanel panel = new JPanel();
 	panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -166,7 +186,7 @@ public class input extends JFrame implements ActionListener {
     panel.add(p);
   	JPanel p2 = new JPanel();
     p2.setLayout(new FlowLayout());
-    JLabel label2 = new JLabel("ブラックホール方向 : 1 , ブラックホールと逆方向 : 2");
+    JLabel label2 = new JLabel("ブラックホール方向 : 1 , ブラックホールと逆方向 : -1");
     p2.add(label2);
     panel.add(p2);
     return panel;
@@ -343,6 +363,9 @@ public class input extends JFrame implements ActionListener {
     JButton btnc2 = new JButton("Cace 2");
     btnc2.addActionListener(this);
     btnc2.setActionCommand("Case 2");
+    JButton btnc3 = new JButton("Cace 3");
+    btnc3.addActionListener(this);
+    btnc3.setActionCommand("Case 3");
     JButton btnsave = new JButton("Save");
     btnsave.addActionListener(this);
     btnsave.setActionCommand("Save");
@@ -354,6 +377,7 @@ public class input extends JFrame implements ActionListener {
     btnquit.setActionCommand("Quit");
     p.add(btnc1);
     p.add(btnc2);
+    p.add(btnc3);
     p.add(btnsave);
     p.add(btnrun);
     p.add(btnquit);
@@ -435,7 +459,12 @@ public class input extends JFrame implements ActionListener {
   	} catch(NumberFormatException e) {
   		str[12] = "0";
   	}
-  	str[13] = textfilename.getText();
+  	try {
+  		str[13] = String.valueOf(Integer.parseInt(textbmet.getText()));
+  	} catch(NumberFormatException e) {
+  		str[13] = "0";
+  	}
+  	str[14] = textfilename.getText();
   	return str;
   }
 
@@ -453,6 +482,7 @@ public class input extends JFrame implements ActionListener {
   	texttype.setText(String.valueOf(out.type));
   	textoutput.setText(String.valueOf(out.output));
   	textcf.setText(String.valueOf(out.cf));
+  	textbmet.setText(String.valueOf(out.bmet));
   	textfilename.setText(out.filename);
   }
 
@@ -479,6 +509,7 @@ public class input extends JFrame implements ActionListener {
  		out.type = 0;
   		out.output = 0;
   		out.cf = 0;
+  		out.bmet=1;
   		out.filename = "resalt.txt";
   		settext();
   	} else if (cmd.equals("Case 2")){
@@ -494,7 +525,25 @@ public class input extends JFrame implements ActionListener {
   		out.sign = 1;
  		out.type = 1;
   		out.output = 0;
+  		out.cf = 1;
+  		out.bmet=0;
+  		out.filename = "resalt.txt";
+  		settext();
+  	} else if (cmd.equals("Case 3")){
+  		out.mag = 0.3;
+  		out.lx = 10.0;
+  		out.ly = 0.0;
+  		out.deg = -90.0;
+  		out.dt = 0.005;
+  		out.lcount = 72;
+  		out.nacount = 100000;
+  		out.ddeg = 5.0;
+  		out.dy = 0.1732050807568877;
+  		out.sign = 1;
+ 		out.type = 0;
+  		out.output = 0;
   		out.cf = 0;
+  		out.bmet=1;
   		out.filename = "resalt.txt";
   		settext();
   	}
@@ -516,10 +565,11 @@ class outside {
   int type;
   int output;
   int cf;
+  int bmet;
   String filename;
   
   outside() {
-  	Line = 15;
+  	Line = 16;
   }
   
   public int open() {
@@ -552,33 +602,10 @@ class outside {
 
       if (checkBeforeWritefile(file)){
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-        bw.write(str[0]);
-        bw.newLine();
-        bw.write(str[1]);
-        bw.newLine();
-        bw.write(str[2]);
-        bw.newLine();
-        bw.write(str[3]);
-        bw.newLine();
-        bw.write(str[4]);
-        bw.newLine();
-        bw.write(str[5]);
-        bw.newLine();
-        bw.write(str[6]);
-        bw.newLine();
-        bw.write(str[7]);
-        bw.newLine();
-        bw.write(str[8]);
-        bw.newLine();
-        bw.write(str[9]);
-        bw.newLine();
-        bw.write(str[10]);
-        bw.newLine();
-        bw.write(str[11]);
-        bw.newLine();
-        bw.write(str[12]);
-        bw.newLine();
-        bw.write(str[13]);
+        for(int i = 0; i < Line-1; i++) {
+            bw.write(str[i]);
+            bw.newLine();
+        }
 
         bw.close();
       }else{
@@ -603,7 +630,8 @@ class outside {
   	type = Integer.parseInt(str[10]);
   	output = Integer.parseInt(str[11]);
   	cf = Integer.parseInt(str[12]);
-  	filename = str[13];
+  	bmet = Integer.parseInt(str[13]);
+  	filename = str[14];
   }
   
   public String[] read() {

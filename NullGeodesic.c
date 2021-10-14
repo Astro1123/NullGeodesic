@@ -37,6 +37,7 @@ int sign;									    		// 符号 (ブラックホールに近づくとき+1)
 double epsc;
 int type;												// 0:角度を変化、1:y座標を変化
 int cf;
+int bmethod;
 int output;                                            // 出力(0：出力しない、1：terminalに出力、2：ファイルに出力)
 bool output_r = false;                          // 計算結果の出力
 char filename[64];                               // 出力するファイル名
@@ -69,13 +70,19 @@ int input(void) {
     fgets(str, sizeof(str), f);	
     dy = atof(str);
     fgets(str, sizeof(str), f);	
-    sign = atoi(str);
+    if (abs(atoi(str))==1) {
+        sign = atoi(str);
+    } else {
+        sign = (atoi(str)%2)*2-1;
+    }
     fgets(str, sizeof(str), f);	
     type = atoi(str);
     fgets(str, sizeof(str), f);	
     output = atoi(str);
     fgets(str, sizeof(str), f);	
     cf = atoi(str);
+    fgets(str, sizeof(str), f);	
+    bmethod = atoi(str);
     fgets(str, sizeof(str), f);	
     strcpy(filename,str);
     fclose(f);
@@ -127,8 +134,8 @@ void PrLine(double x1, double y1, double x2, double y2) {
 
 void display(void) {
   double r, x, y, x0, y0, r0, phi0, theta0, phi, rmin;
-  double dr, dph;
-  int i, j;
+  double dr, dph,dt0;
+  int i, j ,sign0,signp ;
   char str[64];
   
   glClear(GL_COLOR_BUFFER_BIT);
@@ -158,11 +165,13 @@ void display(void) {
   sprintf(str,"\n");
   show(str, output, fp);
   
+    dt0 = dt;
+    sign0 = sign;
 	for(i=0; i<lcount; i++) {
 		if (type == 0) {
   			x = lx;
  			y = ly;
-			theta0 = deg2rad(deg + ddeg * i);
+			theta0 = fmod(deg2rad(deg + ddeg * i),(2*M_PI));
 			sprintf(str, "光源(%d)：(%f, %f)\n", i+1, lx, ly);
   	        show(str, output, fp);
 			sprintf(str, "deg(%d)：%f\n", i+1, deg + ddeg * i);
@@ -170,24 +179,36 @@ void display(void) {
 		} else if (type == 1) {
   			x = lx;
  			y = ly+dy*i;
-			theta0 = deg2rad(deg);
+			theta0 = fmod(deg2rad(deg),(2*M_PI));
 			sprintf(str, "光源(%d)：(%f, %f)\n", i+1, lx, ly + dy*i);
   	        show(str, output, fp);
 			sprintf(str, "deg(%d)：%f\n", i+1, deg);
   	        show(str, output, fp);
 		}
 		xy2rp(&r0, &phi0, x, y);
-		b = r0 * sin(phi0 + theta0);
-	    if (b < 1.4999*sqrt(3) && cf == 1) {
+		if (bmethod == 0) {
+		    b = r0 * sin(phi0 + theta0);
+		} else {
+		    b = r0 * sin(phi0 + theta0) / sqrt( (r0 - 1.0) / r0 );
+		}
+		rmin = r_minimum(b);
+		
+	    if (rmin < 0.5 && cf == 1) {
 	        glColor3d(0.75, 0.0, 0.0);
 	    } else {
 	        glColor3d(1.0, 0.0, 0.0);
 	    }
 	    
 		sign = 1;
+		if (fmod(theta0+phi0,2*M_PI) < deg2rad(-90) && fmod(theta0+phi0,2*M_PI) > deg2rad(-270) || fmod(theta0+phi0,2*M_PI) > deg2rad(90) && fmod(theta0+phi0,2*M_PI) < deg2rad(270)) {
+		    signp=-1;
+		    dt=dt0*(-1);
+		} else {
+		    signp=1;
+		    dt=dt0;
+		}
 		r = r0;
 		phi = phi0;
-		rmin = r_minimum(b);
 		sprintf(str, "衝突パラメータ (b)：%f\n",b);
   	    show(str, output, fp);
 		sprintf(str, "r_min：%f\n",rmin);
@@ -204,7 +225,7 @@ void display(void) {
 			}
 			if (r + dr * sign < 1.0 + epsc) {
 			 	r += dr * sign;
- 				phi += dph;
+ 				phi += dph * signp;
  				x0 = x;
  				y0 = y;
  				rp2xy(&x, &y, r, phi);
@@ -215,7 +236,7 @@ void display(void) {
  			 	sign *= -1;
  			 } 
  			 r += dr * sign;
- 			 phi += dph;
+ 			 phi += dph * signp;
  			 x0 = x;
  			 y0 = y;
  			 rp2xy(&x, &y, r, phi);

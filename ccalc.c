@@ -40,5 +40,5 @@ double r_minimum(double b) {
 		if (max < a)
 			max = a;
 	}
-	return a;
+	return max;
 }
