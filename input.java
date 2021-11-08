@@ -366,6 +366,9 @@ public class input extends JFrame implements ActionListener {
     JButton btnc3 = new JButton("Cace 3");
     btnc3.addActionListener(this);
     btnc3.setActionCommand("Case 3");
+    JButton btnc4 = new JButton("Cace 4");
+    btnc4.addActionListener(this);
+    btnc4.setActionCommand("Case 4");
     JButton btnsave = new JButton("Save");
     btnsave.addActionListener(this);
     btnsave.setActionCommand("Save");
@@ -378,6 +381,7 @@ public class input extends JFrame implements ActionListener {
     p.add(btnc1);
     p.add(btnc2);
     p.add(btnc3);
+    p.add(btnc4);
     p.add(btnsave);
     p.add(btnrun);
     p.add(btnquit);
@@ -543,6 +547,23 @@ public class input extends JFrame implements ActionListener {
  		out.type = 0;
   		out.output = 0;
   		out.cf = 0;
+  		out.bmet=1;
+  		out.filename = "resalt.txt";
+  		settext();
+  	} else if (cmd.equals("Case 4")){
+  		out.mag = 0.3;
+  		out.lx = 10.0;
+  		out.ly = 0.0;
+  		out.deg = 14.5;
+  		out.dt = 0.005;
+  		out.lcount = 80;
+  		out.nacount = 100000;
+  		out.ddeg = -0.00753125;
+  		out.dy = 0.1732050807568877;
+  		out.sign = 1;
+ 		out.type = 0;
+  		out.output = 0;
+  		out.cf = 1;
   		out.bmet=1;
   		out.filename = "resalt.txt";
   		settext();
